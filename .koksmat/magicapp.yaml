@@ -1,133 +1,11 @@
 # https://locize.com/blog/next-app-dir-i18n/
-name: people
+name: accounts
 type: magicservice
 organisation: magicbutton
 magicappversion: v0.0.1
 description: |
-  Application focusing on having a single point of entry in the form of a `person` to find all related information 
-  - Users, Companies, Groups, Relations, Systems, Countries
-react:
-  templates:
-    formfield: &formfield
-      markup: |
-        <FormField
-         control={form.control}
-         name="##NAME##"
-         render={({ field }) => (
-           <FormItem>
-             <FormLabel>##LABEL##</FormLabel>
-             <FormControl>
-               ##FORMCONTROL##
-             </FormControl>
-             <FormDescription>
-               ##DESCRIPTION##
-             </FormDescription>
-             <FormMessage />
-           </FormItem>
-         )}
-        />
-  components:
-    stringformfield: &StringFormField
-      name: formfield
-      template: *formfield
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-
-    numberformfield: &NumberFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    intformfield: &IntFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    datetimeformfield: &DateTimeFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    booleanformfield: &BooleanFormField
-      name: formfield
-      template: *formfield
-      markup: |
-        <div>Boolean not implemented</div>
-      # markup: |
-      #   <Input placeholder="##PLACEHOLDER##" {...field} />
-    arrayformfield: &ArrayFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    lookupformfield: &LookupFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    referenceformfield: &ReferenceFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-
-    jsonformfield: &JSONFormField
-      name: formfield
-      template: *formfield
-
-      markup: |
-        <Input placeholder="##PLACEHOLDER##" {...field} />
-    viewitem: &ViewItem
-      name: viewitem
-      markup: |
-        export function ViewItem<T>(props: {caption:string, value:T}) {
-        const {caption, value} = props;
-        return (
-        <div>
-          <div className="font-bold">{caption}</h1>
-          <div >{value}</h1>
-        </div>
-        )
-        }
-    formitem: &EditItem
-      name: formitem
-      markup: |
-        export function EditItem<T>(props: { caption:string, FormField : FormFieldType<T>, value:T, onChange: (value:T) => void}) {
-        const {caption, value,ForField} = props;
-        return (
-        <div>
-          <div className="font-bold">{caption}</h1>
-          <div ><FormField<T> onChange={onChange} value={value} /></h1>
-        </div>
-        )
-        }
-defaults:
-  viewitem: *ViewItem
-  edititem: *EditItem
-  primitive:
-    json:
-      formfield: *JSONFormField
-
-    string:
-      formfield: *StringFormField
-    number:
-      formfield: *NumberFormField
-    datetime:
-      formfield: *DateTimeFormField
-    int:
-      formfield: *IntFormField
-    boolean:
-      formfield: *BooleanFormField
-    array:
-      formfield: *ArrayFormField
-    reference:
-      formfield: *LookupFormField
+  Application focusing on having a single point of entry in the form of a `account` to find all related information 
+  about a person, company, system, group, country, and relation.
 baseattributes:
   record:
     &recordAttributes # Id + Created + Updated + CreatedBy + UpdatedBy are implicit
@@ -206,91 +84,16 @@ entities:
         type: reference
         entity: *country
         required: false
-  system: &system
-    name: system
-    displayname: System
-    description: System
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: version
-        displayname: Version
-        type: string
-        required: true
-
-  user: &user
-    name: user
-    displayname: User
-    description: User
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: system
-        displayname: System
-        type: reference
-        entity: *system
-        required: true
-      - name: fullname
-        displayname: FullName
-        type: string
-        required: true
-  relation: &relation
-    name: relation
-    displayname: Relation
-    description: Relation
-    baselineattributes: *recordAttributes
-    additionalattributes:
-      - name: relation
-        type: reference
-        displayname: Company Relation
-        entity: *company
-        required: false
-      - name: relationtype
-        displayname: Relation Type
-        type: string
-        required: false
-      - name: groups
-        displayname: Groups
-        type: array
-        entity: *group
-
-  person: &person
-    name: person
-    description: Person
+  account: &account
+    name: account
+    displayname: Account
+    description: Account
     baselineattributes: *recordAttributes
     additionalattributes:
       - name: email
         displayname: Email
         type: string
-        required: false
-        searchindex: true
-      - name: displayname
-        displayname: DisplayName
-        type: string
-        required: false
-        searchindex: true
-      - name: firstname
-        displayname: FirstName
-        type: string
         required: true
-      - name: lastname
-        displayname: LastName
-        type: string
-        required: true
-      - name: uniqueid
-        displayname: Unique Id
-        type: string
-        required: true
-        searchindex: true
-
-      - name: nationality
-        displayname: Nationality
-        type: reference
-        entity: *country
-        required: false
-      - name: users
-        displayname: Users
-        type: array
-        entity: *relation
-        required: false
 
 models:
   itemMethods: &itemMethods
@@ -344,15 +147,6 @@ models:
         type: page
 
 services:
-  - name: user
-    description: Manage users
-    entity:
-      type: record
-      model: user
-      objectname: User
-      entity: *user
-    methods: *itemMethods
-
   - name: group
     description: Manage Groups
     entity:
@@ -380,30 +174,11 @@ services:
       entity: *company
     methods: *itemMethods
 
-  - name: person
-    description: Manage Persons
+  - name: account
+    description: Manage Accounts
     entity:
       type: record
-      model: person
-      objectname: Person
-      entity: *person
-    methods: *itemMethods
-    viewitem:
-
-  - name: relation
-    description: Manage Relations
-    entity:
-      type: record
-      model: relation
-      objectname: Relation
-      entity: *relation
-    methods: *itemMethods
-
-  - name: system
-    description: Manage Systems
-    entity:
-      type: record
-      model: system
-      objectname: System
-      entity: *system
+      model: account
+      objectname: Account
+      entity: *account
     methods: *itemMethods
